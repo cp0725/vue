@@ -5,6 +5,7 @@ import { eventsMixin } from './events'
 import { lifecycleMixin } from './lifecycle'
 import { warn } from '../util/index'
 
+// 入口
 function Vue(options) {  // vue的入口通过new一个function实现一个实例
   if (process.env.NODE_ENV !== 'production' &&
     !(this instanceof Vue)
