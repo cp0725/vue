@@ -1,3 +1,4 @@
+// vue源码构建入口
 const fs = require('fs')
 const path = require('path')
 const zlib = require('zlib')
@@ -8,9 +9,11 @@ if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist')
 }
 
+// 读取配置文件
 let builds = require('./config').getAllBuilds()
 
 // filter builds via command line arg
+// 对配置文件做过滤得到对应场景的 vue
 if (process.argv[2]) {
   const filters = process.argv[2].split(',')
   builds = builds.filter(b => {

@@ -37,15 +37,15 @@ const resolve = p => {
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs': {
-    entry: resolve('web/entry-runtime.js'),
-    dest: resolve('dist/vue.runtime.common.js'),
-    format: 'cjs',
+    entry: resolve('web/entry-runtime.js'),   // 构建的入口 JS 文件地址
+    dest: resolve('dist/vue.runtime.common.js'), // 构建后的 JS 文件地址
+    format: 'cjs', // 表示构建的格式 （cjs 表示构建出来的文件遵循 CommonJS 规范；es 表示遵循 ES Module 规范；umd 表示遵循 UMD 规范）
     banner
   },
   // Runtime+compiler CommonJS build (CommonJS)
   'web-full-cjs': {
-    entry: resolve('web/entry-runtime-with-compiler.js'),
-    dest: resolve('dist/vue.common.js'),
+    entry: resolve('web/entry-runtime-with-compiler.js'), // 构建的入口 JS 文件地址
+    dest: resolve('dist/vue.common.js'), // 构建后的 JS 文件地址
     format: 'cjs',
     alias: { he: './entity-decoder' },
     banner

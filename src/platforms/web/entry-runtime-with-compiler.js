@@ -15,22 +15,16 @@ const idToTemplate = cached(id => {
 })
 
 const mount = Vue.prototype.$mount
-Vue.prototype.$mount = function (
-  el?: string | Element,
-  hydrating?: boolean
-): Component {
-  el = el && query(el)
-
-  /* istanbul ignore if */
-  if (el === document.body || el === document.documentElement) {
+Vue.prototype.$mount = function (el?: string | Element, hydrating?: boolean): Component { // 第二个参数是服务端渲染相关的
+  el = el && query(el)  // document.querySelector(el)  可以传入一个字符串也可以传入一个DOM， 字符通过 query 方法的 querySelector 去查找，dom直接返回
+  if (el === document.body || el === document.documentElement) {  // 不允许直接挂在到 body http 上，通常是一个 #app 的div上, 因为vue会用生成元素替换挂载元素。
     process.env.NODE_ENV !== 'production' && warn(
       `Do not mount Vue to <html> or <body> - mount to normal elements instead.`
     )
     return this
   }
 
-  const options = this.$options
-  // resolve template/el and convert to render function
+  const options = this.$options // 实例化传入的参数
   if (!options.render) {
     let template = options.template
     if (template) {
