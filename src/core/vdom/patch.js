@@ -67,12 +67,12 @@ function createKeyToOldIdx (children, beginIdx, endIdx) {
   return map
 }
 
+
+// const hooks = ['create', 'activate', 'update', 'remove', 'destroy']
 export function createPatchFunction (backend) {
   let i, j
   const cbs = {}
-
   const { modules, nodeOps } = backend
-
   for (i = 0; i < hooks.length; ++i) {
     cbs[hooks[i]] = []
     for (j = 0; j < modules.length; ++j) {
@@ -85,7 +85,6 @@ export function createPatchFunction (backend) {
   function emptyNodeAt (elm) {
     return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm)
   }
-
   function createRmCb (childElm, listeners) {
     function remove () {
       if (--remove.listeners === 0) {
@@ -95,7 +94,6 @@ export function createPatchFunction (backend) {
     remove.listeners = listeners
     return remove
   }
-
   function removeNode (el) {
     const parent = nodeOps.parentNode(el)
     // element may have already been removed due to v-html / v-text
@@ -103,7 +101,6 @@ export function createPatchFunction (backend) {
       nodeOps.removeChild(parent, el)
     }
   }
-
   function isUnknownElement (vnode, inVPre) {
     return (
       !inVPre &&
@@ -119,7 +116,6 @@ export function createPatchFunction (backend) {
       config.isUnknownElement(vnode.tag)
     )
   }
-
   let creatingElmInVPre = 0
 
   function createElm (
@@ -154,6 +150,7 @@ export function createPatchFunction (backend) {
           creatingElmInVPre++
         }
         if (isUnknownElement(vnode, creatingElmInVPre)) {
+          // 组件没有注册的报错
           warn(
             'Unknown custom element: <' + tag + '> - did you ' +
             'register the component correctly? For recursive components, ' +
@@ -264,11 +261,10 @@ export function createPatchFunction (backend) {
         break
       }
     }
-    // unlike a newly created component,
-    // a reactivated keep-alive component doesn't insert itself
     insert(parentElm, vnode.elm, refElm)
   }
 
+  // 重要  插入节点操作
   function insert (parent, elm, ref) {
     if (isDef(parent)) {
       if (isDef(ref)) {
@@ -682,15 +678,17 @@ export function createPatchFunction (backend) {
     }
   }
 
+
+  // 这里还有很多辅助函数，为了记录方便先去掉 .....
+  // vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
+
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
     }
-
     let isInitialPatch = false
     const insertedVnodeQueue = []
-
     if (isUndef(oldVnode)) {
       // empty mount (likely as component), create new root element
       isInitialPatch = true
@@ -702,9 +700,6 @@ export function createPatchFunction (backend) {
         patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly)
       } else {
         if (isRealElement) {
-          // mounting to a real element
-          // check if this is server-rendered content and if we can perform
-          // a successful hydration.
           if (oldVnode.nodeType === 1 && oldVnode.hasAttribute(SSR_ATTR)) {
             oldVnode.removeAttribute(SSR_ATTR)
             hydrating = true
@@ -723,22 +718,15 @@ export function createPatchFunction (backend) {
               )
             }
           }
-          // either not server-rendered, or hydration failed.
-          // create an empty node and replace it
+          // emptyNodeAt 把真实的dom转换成 Virtual DOM
           oldVnode = emptyNodeAt(oldVnode)
         }
-
-        // replacing existing element
-        const oldElm = oldVnode.elm
-        const parentElm = nodeOps.parentNode(oldElm)
-
-        // create new node
-        createElm(
+        // xxxxx 一系列都是辅助函数
+        const oldElm = oldVnode.elm  // emptyNodeAt 做了封装可以拿到真实的DOM
+        const parentElm = nodeOps.parentNode(oldElm) // 拿到父元素一般是 body
+        createElm(  // 把 VNode 挂载到真实的dom上  createElement的封装，遍历递归子元素
           vnode,
           insertedVnodeQueue,
-          // extremely rare edge case: do not insert if old element is in a
-          // leaving transition. Only happens when combining transition +
-          // keep-alive + HOCs. (#4590)
           oldElm._leaveCb ? null : parentElm,
           nodeOps.nextSibling(oldElm)
         )
