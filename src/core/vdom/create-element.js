@@ -26,14 +26,14 @@ const ALWAYS_NORMALIZE = 2
 // wrapper function for providing a more flexible interface
 // without getting yelled at by flow
 export function createElement (
-  context: Component,
-  tag: any,
-  data: any,
-  children: any,
+  context: Component,  // vm实例
+  tag: any,            // vnode Tag
+  data: any,           // vnode data
+  children: any,       // 子节点 vnode
   normalizationType: any,
   alwaysNormalize: boolean
 ): VNode | Array<VNode> {
-  if (Array.isArray(data) || isPrimitive(data)) {
+  if (Array.isArray(data) || isPrimitive(data)) {  // 对参数个数做了处理如果某个参数没有传入向前移位
     normalizationType = children
     children = data
     data = undefined
@@ -43,7 +43,7 @@ export function createElement (
   }
   return _createElement(context, tag, data, children, normalizationType)
 }
-
+// createElement 方法只是对函数的参数做了一层封装处理，实际上createElement调用的是 _createElement 方法
 export function _createElement (
   context: Component,
   tag?: string | Class<Component> | Function | Object,
@@ -88,9 +88,9 @@ export function _createElement (
     children.length = 0
   }
   if (normalizationType === ALWAYS_NORMALIZE) {
-    children = normalizeChildren(children)
-  } else if (normalizationType === SIMPLE_NORMALIZE) {
-    children = simpleNormalizeChildren(children)
+    children = normalizeChildren(children)  // 遍历子节点
+  } else if (normalizationType === SIMPLE_NORMALIZE) { 
+    children = simpleNormalizeChildren(children)  // 处理 v-for 之类的冰凌
   }
   let vnode, ns
   if (typeof tag === 'string') {
