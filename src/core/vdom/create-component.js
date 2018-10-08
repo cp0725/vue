@@ -97,7 +97,13 @@ const componentVNodeHooks = {
 }
 
 const hooksToMerge = Object.keys(componentVNodeHooks)
-
+/*
+Ctor: 组件的class、函数、对象、void
+data: VNodeData
+context: 上下文，当前vue实例
+children: 组件子 vnode
+tag:
+*/
 export function createComponent (
   Ctor: Class<Component> | Function | Object | void,
   data: ?VNodeData,
@@ -125,7 +131,8 @@ export function createComponent (
     return
   }
 
-  // async component
+  // 异步组件的处理
+  // async component 
   let asyncFactory
   if (isUndef(Ctor.cid)) {
     asyncFactory = Ctor
@@ -144,6 +151,7 @@ export function createComponent (
     }
   }
 
+  // 对data做处理
   data = data || {}
 
   // resolve constructor options in case global mixins are applied after
@@ -155,13 +163,16 @@ export function createComponent (
     transformModel(Ctor.options, data)
   }
 
+  // props 处理成 propsData
   // extract props
   const propsData = extractPropsFromVNodeData(data, Ctor, tag)
 
+  // 函数组件
   // functional component
   if (isTrue(Ctor.options.functional)) {
     return createFunctionalComponent(Ctor, propsData, data, context, children)
   }
+
 
   // extract listeners, since these needs to be treated as
   // child component listeners instead of DOM listeners
@@ -182,6 +193,7 @@ export function createComponent (
     }
   }
 
+  // 安装组件钩子
   // install component management hooks onto the placeholder node
   installComponentHooks(data)
 
@@ -223,6 +235,7 @@ export function createComponentInstanceForVnode (
   return new vnode.componentOptions.Ctor(options)
 }
 
+// 安装组件的钩子
 function installComponentHooks (data: VNodeData) {
   const hooks = data.hook || (data.hook = {})
   for (let i = 0; i < hooksToMerge.length; i++) {

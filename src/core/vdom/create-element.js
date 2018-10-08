@@ -93,7 +93,7 @@ export function _createElement (
     children = simpleNormalizeChildren(children)  // 处理 v-for 之类的冰凌
   }
   let vnode, ns
-  if (typeof tag === 'string') {
+  if (typeof tag === 'string') { // 判断传入的参数是字符串还是组件
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
     if (config.isReservedTag(tag)) {
