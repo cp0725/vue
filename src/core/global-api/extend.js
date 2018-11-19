@@ -16,27 +16,29 @@ export function initExtend (Vue: GlobalAPI) {
   /**
    * Class inheritance
    */
+
+  // 传入一个对象返回一个构造函数
   Vue.extend = function (extendOptions: Object): Function {
     extendOptions = extendOptions || {}
-    const Super = this
-    const SuperId = Super.cid
+    const Super = this // this 是 Vue
+    const SuperId = Super.cid // Vue id
     const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
     if (cachedCtors[SuperId]) {
       return cachedCtors[SuperId]
     }
 
-    const name = extendOptions.name || Super.options.name
+    const name = extendOptions.name || Super.options.name // 组件name
     if (process.env.NODE_ENV !== 'production' && name) {
-      validateComponentName(name)
+      validateComponentName(name) // 对组件name做了校验 字母开头且不是内置标签
     }
 
-    const Sub = function VueComponent (options) {
+    const Sub = function VueComponent (options) { // 子构造函数
       this._init(options)
     }
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
     Sub.cid = cid++
-    Sub.options = mergeOptions(
+    Sub.options = mergeOptions( // 组件自身配置合并到vue配置
       Super.options,
       extendOptions
     )
@@ -74,7 +76,7 @@ export function initExtend (Vue: GlobalAPI) {
     Sub.extendOptions = extendOptions
     Sub.sealedOptions = extend({}, Sub.options)
 
-    // cache constructor
+    // 缓存功能多次引用同一个组件，只会执行一次构造
     cachedCtors[SuperId] = Sub
     return Sub
   }

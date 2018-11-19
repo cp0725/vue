@@ -90,20 +90,20 @@ export function _createElement (
   if (normalizationType === ALWAYS_NORMALIZE) {
     children = normalizeChildren(children)  // 遍历子节点
   } else if (normalizationType === SIMPLE_NORMALIZE) { 
-    children = simpleNormalizeChildren(children)  // 处理 v-for 之类的冰凌
+    children = simpleNormalizeChildren(children)  // 处理 v-for 之类的指令
   }
   let vnode, ns
   if (typeof tag === 'string') { // 判断传入的参数是字符串还是组件
+    // 传入字符串
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
     if (config.isReservedTag(tag)) {
-      // platform built-in elements
+      // 创建vNode
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
       )
     } else if (isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
       // unknown or unlisted namespaced elements
@@ -115,7 +115,7 @@ export function _createElement (
       )
     }
   } else {
-    // direct component options / constructor
+    // 传入的是组件
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {
