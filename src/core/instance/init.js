@@ -53,10 +53,13 @@ export function initMixin (Vue: Class<Component>) {
     initEvents(vm)
     initRender(vm)
     callHook(vm, 'beforeCreate')
-    initInjections(vm) // resolve injections before data/props
-    initState(vm)
-    initProvide(vm) // resolve provide after data/props
+    initInjections(vm)
+    initState(vm) // 初始化data、props、methods、watch、computed
+    initProvide(vm)
     callHook(vm, 'created')
+    // 至此还没有挂载DOM，也就是说到 created 钩子的时候依然是不能访问DOM的。
+    // initState 方法的作用是初始化data、props、methods、watch、computed，也就是说 beforeCreate 访问不到data以及methods等数据，而 created 是可以的。
+    // beforeCreate钩子 和 created钩子 可用于组件初始化阶段和后台交互，如果这个交互过程是单项的，也就是说前端不关心后台的返回数据，比如后台统计当日的活跃用户统计用户的登陆地址等，这些功能可以放在beforeCreate钩子里。如果关心后台的返回数据需要把数据设置给data那么就要放在created钩子里了。
 
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
